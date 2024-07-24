@@ -1,9 +1,8 @@
 package org.example.exercice4spring.controller;
 
 import jakarta.validation.Valid;
-
 import org.example.exercice4spring.model.Categorie;
-import org.example.exercice4spring.service.CategoriesServiceImpl;
+import org.example.exercice4spring.service.ICategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,10 +16,10 @@ import java.util.UUID;
 @RequestMapping("/categories")
 public class CategoryController {
 
-    private CategoriesServiceImpl categoryService;
+    private final ICategoriesService categoryService;
 
     @Autowired
-    public CategoryController(CategoriesServiceImpl categoryService) {
+    public CategoryController(ICategoriesService categoryService) {
         this.categoryService = categoryService;
     }
 
@@ -38,11 +37,11 @@ public class CategoryController {
     }
 
     @PostMapping("/ajouter")
-    public String sauvegarderCategorie(@Valid @ModelAttribute("category") Categorie category, BindingResult result) {
+    public String sauvegarderCategorie(@Valid @ModelAttribute("category") Categorie categorie, BindingResult result) {
         if (result.hasErrors()) {
             return "categories/form";
         }
-        categoryService.createCategory(category);
+        categoryService.createCategory(categorie);
         return "redirect:/categories";
     }
 
@@ -61,7 +60,7 @@ public class CategoryController {
         if (result.hasErrors()) {
             return "categories/form";
         }
-        categoryService.updateCategory(category.getId(), category);
+        categoryService.updateCategory(category);
         return "redirect:/categories";
     }
 

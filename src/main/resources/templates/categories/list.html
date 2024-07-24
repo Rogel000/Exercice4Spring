@@ -1,10 +1,54 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <title>Liste des Catégories</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-$END$
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Recettes de Cuisine</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/recette/ajouter">Ajouter Recette</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/recette/lister">Lister Recettes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/ajouter">Ajouter Catégorie</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/categories">Lister Catégories</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <h2>Liste des Catégories</h2>
+    <a href="/categories/ajouter" class="btn btn-primary mb-3">Ajouter une catégorie</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="category : ${categories}">
+            <td th:text="${category.nom}"></td>
+            <td th:text="${category.description}"></td>
+            <td>
+                <a th:href="@{/categories/modifier/{id}(id=${category.id})}" class="btn btn-warning">Modifier</a>
+                <a th:href="@{/categories/supprimer/{id}(id=${category.id})}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ?');">Supprimer</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

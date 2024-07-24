@@ -1,10 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Ajouter Recette</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
-$END$
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Recettes de Cuisine</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/recette/ajouter">Ajouter Recette</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/recette/lister">Lister Recettes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/categories/ajouter">Ajouter Catégorie</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/categories">Lister Catégories</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="container mt-5">
+    <h2 th:text="${recette.id != null} ? 'Modifier Recette' : 'Ajouter Recette'"></h2>
+    <form th:action="@{${recette.id != null} ? '/recette/modifier' : '/recette/ajouter'}" th:object="${recette}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <div class="form-group">
+            <label for="nom">Nom:</label>
+            <input type="text" id="nom" th:field="*{nom}" class="form-control" />
+            <div th:if="${#fields.hasErrors('nom')}" class="text-danger" th:errors="*{nom}">Nom Error</div>
+        </div>
+        <div class="form-group">
+            <label for="ingredients">Ingrédients:</label>
+            <textarea id="ingredients" th:field="*{ingredients}" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="instructions">Instructions:</label>
+            <textarea id="instructions" th:field="*{instructions}" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="categorie">Catégorie:</label>
+            <select id="categorie" th:field="*{categorie.id}" class="form-control">
+                <option value="" th:text="${categories.isEmpty() ? 'Aucune catégorie disponible' : ''}"></option>
+                <option th:each="categorie : ${categories}" th:value="${categorie.id}" th:text="${categorie.nom}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Enregistrer</button>
+    </form>
+</div>
 </body>
 </html>
