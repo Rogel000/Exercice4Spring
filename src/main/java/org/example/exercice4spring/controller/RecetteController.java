@@ -3,8 +3,8 @@ package org.example.exercice4spring.controller;
 import jakarta.validation.Valid;
 
 import org.example.exercice4spring.model.Recette;
-import org.example.exercice4spring.service.ICategoriesService;
-import org.example.exercice4spring.service.IRecetteService;
+import org.example.exercice4spring.service.CategoriesServiceImpl;
+import org.example.exercice4spring.service.RecetteServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,10 +17,10 @@ import java.util.UUID;
 @RequestMapping("/recette")
 public class RecetteController {
 
-  private final IRecetteService recetteService;
-    private final ICategoriesService categorieService;
+  private final RecetteServiceImpl recetteService;
+    private final CategoriesServiceImpl categorieService;
 
-    public RecetteController(IRecetteService recetteService, ICategoriesService categorieService) {
+    public RecetteController(RecetteServiceImpl recetteService, CategoriesServiceImpl categorieService) {
         this.recetteService = recetteService;
         this.categorieService = categorieService;
     }
@@ -28,7 +28,7 @@ public class RecetteController {
 
     @GetMapping("/lister")
     public String ListerRecette(Model model) {
-        List<Recette> recettes = recetteService.getRecetteList();
+        List<Recette> recettes = recetteService.findAll();
         model.addAttribute("recettes", recettes);
         return "recette/lister";
     }
@@ -36,28 +36,28 @@ public class RecetteController {
     @GetMapping("/ajouter")
     public String ajouterRecette(Model model) {
         model.addAttribute("recette", new Recette());
-        model.addAttribute("categories", categorieService.getAllCategories());
+        model.addAttribute("categories", categorieService.findAll());
         return "recette/ajouter";
     }
 
     @PostMapping("/ajouter")
     public String sauvegarderRecette(@Valid @ModelAttribute("recette") Recette recette, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("categories", categorieService.getAllCategories());
+            model.addAttribute("categories", categorieService.findAll());
             return "recette/ajouter";
         }
-        recetteService.createRecette(recette);
+        recetteService.create(recette);
         return "redirect:/recette/lister";
     }
 
     @GetMapping("/modifier/{id}")
     public String modifierRecette(@PathVariable UUID id, Model model) {
-        Recette recette = recetteService.getRecetteById(id);
+        Recette recette = recetteService.findById(id);
         if (recette == null) {
             return "redirect:/recette/lister";
         }
         model.addAttribute("recette", recette);
-        model.addAttribute("categories", categorieService.getAllCategories());
+        model.addAttribute("categories", categorieService.findAll());
         return "recette/ajouter";
     }
 
@@ -65,10 +65,10 @@ public class RecetteController {
     public String sauvegarderModification(@Valid @ModelAttribute("recette") Recette recette, BindingResult result, Model model) {
         System.out.println(recette);
         if (result.hasErrors()) {
-            model.addAttribute("categories", categorieService.getAllCategories());
+            model.addAttribute("categories", categorieService.findAll());
             return "recette/ajouter";
         }
-        recetteService.updateRecette(recette);
+        recetteService.update(recette);
         return "redirect:/recette/lister";
     }
 
@@ -76,7 +76,7 @@ public class RecetteController {
 
     @GetMapping("/supprimer/{id}")
     public String supprimerRecette(@PathVariable UUID id) {
-        recetteService.deleteRecette(id);
+        recetteService.delete(id);
         return "redirect:/recette/lister";
     }
 }

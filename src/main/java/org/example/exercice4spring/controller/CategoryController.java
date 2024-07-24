@@ -2,8 +2,7 @@ package org.example.exercice4spring.controller;
 
 import jakarta.validation.Valid;
 import org.example.exercice4spring.model.Categorie;
-import org.example.exercice4spring.service.ICategoriesService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.exercice4spring.service.CategoriesServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,16 +15,16 @@ import java.util.UUID;
 @RequestMapping("/categories")
 public class CategoryController {
 
-    private final ICategoriesService categoryService;
+    private final CategoriesServiceImpl categoryService;
 
-    @Autowired
-    public CategoryController(ICategoriesService categoryService) {
+    public CategoryController(CategoriesServiceImpl categoryService) {
         this.categoryService = categoryService;
     }
 
+
     @GetMapping
     public String listerCategories(Model model) {
-        List<Categorie> categories = categoryService.getAllCategories();
+        List<Categorie> categories = categoryService.findAll();
         model.addAttribute("categories", categories);
         return "categories/list";
     }
@@ -41,13 +40,13 @@ public class CategoryController {
         if (result.hasErrors()) {
             return "categories/form";
         }
-        categoryService.createCategory(categorie);
+        categoryService.create(categorie);
         return "redirect:/categories";
     }
 
     @GetMapping("/modifier/{id}")
     public String modifierCategorie(@PathVariable UUID id, Model model) {
-        Categorie category = categoryService.getCategoryById(id);
+        Categorie category = categoryService.findById(id);
         if (category == null) {
             return "redirect:/categories";
         }
@@ -60,13 +59,13 @@ public class CategoryController {
         if (result.hasErrors()) {
             return "categories/form";
         }
-        categoryService.updateCategory(category);
+        categoryService.update(category);
         return "redirect:/categories";
     }
 
     @GetMapping("/supprimer/{id}")
     public String supprimerCategorie(@PathVariable UUID id) {
-        categoryService.deleteCategory(id);
+        categoryService.delete(id);
         return "redirect:/categories";
     }
 }
